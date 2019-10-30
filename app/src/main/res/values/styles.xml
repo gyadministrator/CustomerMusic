@@ -11,4 +11,12 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <declare-styleable name="NavigationView">
+        <attr name="title" format="string" />
+        <attr name="showBack" format="boolean" />
+        <attr name="showRight" format="boolean" />
+        <attr name="srcBack" format="integer" />
+        <attr name="srcRight" format="integer" />
+    </declare-styleable>
+
 </resources>

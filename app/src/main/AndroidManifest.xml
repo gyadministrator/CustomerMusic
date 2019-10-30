@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SplashActivity" />
         <activity
             android:name=".activity.LauncherActivity"
             android:theme="@style/AppTheme.StartingWindowTheme">

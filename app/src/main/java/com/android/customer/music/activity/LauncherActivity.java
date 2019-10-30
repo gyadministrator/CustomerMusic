@@ -3,6 +3,7 @@ package com.android.customer.music.activity;
 import android.content.Intent;
 import android.os.Handler;
 
+import com.android.customer.music.MainActivity;
 import com.android.customer.music.R;
 
 public class LauncherActivity extends BaseActivity {
@@ -31,7 +32,7 @@ public class LauncherActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(mActivity, SplashActivity.class);
+                Intent intent = new Intent(mActivity, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
