@@ -70,7 +70,7 @@ public class NavigationView extends LinearLayout {
             iv_back.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((Activity) context).finish();
+                    ((Activity) context).onBackPressed();
                 }
             });
         }

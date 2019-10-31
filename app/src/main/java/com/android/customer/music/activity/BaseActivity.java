@@ -9,8 +9,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -51,6 +53,17 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @return
      */
     protected abstract int getContentView();
+
+    /**
+     * 获取控件的值
+     *
+     * @param id  id
+     * @param <T> 控件
+     * @return
+     */
+    protected <T extends View> T fd(@IdRes int id) {
+        return findViewById(id);
+    }
 
     //处理eventBus事件
     @Subscribe(threadMode = ThreadMode.MAIN)
