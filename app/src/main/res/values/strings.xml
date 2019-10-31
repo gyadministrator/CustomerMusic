@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Solo音乐</string>
     <string name="recommend_music">推荐歌单</string>
+    <string name="new_music">最新音乐</string>
 </resources>
