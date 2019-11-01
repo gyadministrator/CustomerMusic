@@ -4,4 +4,6 @@
     <dimen name="marginSize">16dp</dimen>
     <dimen name="navTitleSize">22sp</dimen>
     <dimen name="itemWidth">4dp</dimen>
+    <dimen name="disTopHeight">90dp</dimen>
+    <dimen name="playMusicIconSize">210dp</dimen>
 </resources>

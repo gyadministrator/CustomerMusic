@@ -3,6 +3,7 @@
     package="com.android.customer.music">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -11,6 +12,7 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.PlayMusicActivity"></activity>
         <activity
             android:name=".activity.LauncherActivity"
             android:theme="@style/AppTheme.StartingWindowTheme">

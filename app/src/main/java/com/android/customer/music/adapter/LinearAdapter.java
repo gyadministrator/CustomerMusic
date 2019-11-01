@@ -1,6 +1,7 @@
 package com.android.customer.music.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.customer.music.R;
+import com.android.customer.music.activity.PlayMusicActivity;
 
 /**
  * Description: CustomerMusic
@@ -37,6 +39,14 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         setRecyclerViewHeight();
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, PlayMusicActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     private void setRecyclerViewHeight() {
@@ -56,9 +66,11 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        View itemView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView = itemView;
         }
     }
 }
