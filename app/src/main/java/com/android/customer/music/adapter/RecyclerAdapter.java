@@ -36,7 +36,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(Constants.DEFAULT_URL).into(holder.iv_album);
+        Glide.with(mContext).load(Constants.DEFAULT_ALBUM_URL).into(holder.iv_album);
     }
 
     @Override

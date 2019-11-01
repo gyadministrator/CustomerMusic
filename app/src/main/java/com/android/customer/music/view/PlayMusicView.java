@@ -1,6 +1,7 @@
 package com.android.customer.music.view;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.customer.music.R;
+import com.android.customer.music.helper.MediaPlayerHelper;
 import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,6 +33,8 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
     private CircleImageView mIvIcon;
     private ImageView mIvNeedle, mIvPlay;
     private FrameLayout mFlPlayMusic;
+    private MediaPlayerHelper mMediaPlayerHelper;
+    private String mPath;
     private Animation mPlayMusicAnim, mPlayNeedleAnim, mStopNeedleAnim;
 
     public PlayMusicView(@NonNull Context context) {
@@ -74,16 +78,34 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
         mPlayNeedleAnim = AnimationUtils.loadAnimation(mContext, R.anim.play_needle_anim);
         mStopNeedleAnim = AnimationUtils.loadAnimation(mContext, R.anim.stop_needle_anim);
         addView(mView);
+        mMediaPlayerHelper = MediaPlayerHelper.getInstance(mContext);
     }
 
     /**
      * 播放音乐
      */
-    public void playMusic() {
+    public void playMusic(String path) {
+        mPath = path;
         isPlaying = true;
         mIvPlay.setVisibility(GONE);
         mFlPlayMusic.setAnimation(mPlayMusicAnim);
         mIvNeedle.setAnimation(mPlayNeedleAnim);
+        /**
+         * 1.判断当前音乐是否是已经在播放的音乐
+         * 2.如果当前的音乐是已经在播放的音乐，那么直接执行start方法
+         * 3.如果当前播放的音乐不是需要播放的音乐的话，那么就调用setPath的方法
+         */
+        if (mMediaPlayerHelper.getPath() != null && mMediaPlayerHelper.getPath().equals(path)) {
+            mMediaPlayerHelper.start();
+        } else {
+            mMediaPlayerHelper.setPath(path);
+            mMediaPlayerHelper.setOnMediaPlayerHelperListener(new MediaPlayerHelper.OnMediaPlayerHelperListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mMediaPlayerHelper.start();
+                }
+            });
+        }
     }
 
     /**
@@ -94,6 +116,7 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
         mIvPlay.setVisibility(VISIBLE);
         mFlPlayMusic.clearAnimation();
         mIvNeedle.setAnimation(mStopNeedleAnim);
+        mMediaPlayerHelper.pause();
     }
 
     /**
@@ -117,7 +140,7 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
         if (isPlaying) {
             stopMusic();
         } else {
-            playMusic();
+            playMusic(mPath);
         }
     }
 }

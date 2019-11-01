@@ -27,12 +27,12 @@ public class PlayMusicActivity extends BaseActivity {
         //隐藏状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        Glide.with(this).load(Constants.DEFAULT_URL)
+        Glide.with(this).load(Constants.DEFAULT_ALBUM_URL)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 10)))
                 .into(mIvBg);
 
-        playMusicView.setMusicIcon(Constants.DEFAULT_URL);
-        playMusicView.playMusic();
+        playMusicView.setMusicIcon(Constants.DEFAULT_ALBUM_URL);
+        playMusicView.playMusic(Constants.DEFAULT_MUSIC_URL);
     }
 
     @Override
