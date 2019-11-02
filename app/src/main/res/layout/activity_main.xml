@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <com.android.customer.music.view.NavigationView
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                 android:layout_marginTop="10dp" />
 
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginSize"
@@ -75,10 +75,11 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="4dp"
                     android:layout_weight="1"
-                    android:text="@string/new_music"
+                    android:text="新歌榜"
                     android:textColor="#888888"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <ImageView
                     android:id="@+id/iv_more"
@@ -89,6 +90,11 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_new"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp" />

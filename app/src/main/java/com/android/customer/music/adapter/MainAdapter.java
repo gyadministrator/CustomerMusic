@@ -1,0 +1,99 @@
+package com.android.customer.music.adapter;
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.customer.music.R;
+import com.android.customer.music.activity.AlbumActivity;
+
+import java.util.List;
+
+/**
+ * Description: CustomerMusic
+ * Created by gy(1984629668@qq.com)
+ * Created Time on 2019/11/2 17:30
+ */
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
+    private Context mContext;
+    private List<String> mTitle;
+    private List<Integer> mType;
+    private LinearAdapter linerAdapter;
+    private RecyclerView mRecyclerView;
+    private boolean isCalculationRvHeight;
+    private View mItemView;
+
+    public MainAdapter(Context context, RecyclerView recyclerView, List<String> title, List<Integer> type) {
+        mContext = context;
+        mTitle = title;
+        mType = type;
+        mRecyclerView = recyclerView;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        mItemView = LayoutInflater.from(mContext).inflate(R.layout.main_adapter, parent, false);
+        return new ViewHolder(mItemView);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        setRecyclerViewHeight();
+        //设置标题
+        holder.tvTitle.setText(mTitle.get(position));
+        //设置更多点击事件
+        holder.ivMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //去专辑页面
+                AlbumActivity.startActivity(mContext, mTitle.get(position), mType.get(position));
+            }
+        });
+        //设置数据
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        holder.recyclerView.addItemDecoration(new DividerItemDecoration(mContext, RecyclerView.VERTICAL));
+        holder.recyclerView.setNestedScrollingEnabled(false);
+        linerAdapter = new LinearAdapter(mContext, holder.recyclerView);
+        holder.recyclerView.setAdapter(linerAdapter);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mType.size();
+    }
+
+    private void setRecyclerViewHeight() {
+        if (isCalculationRvHeight || mRecyclerView == null) return;
+        isCalculationRvHeight = true;
+        RecyclerView.LayoutParams itemViewLp = (RecyclerView.LayoutParams) mItemView.getLayoutParams();
+        int itemCount = getItemCount();
+        int recyclerViewHeight = itemViewLp.height * itemCount;
+        LinearLayout.LayoutParams rvLp = (LinearLayout.LayoutParams) mRecyclerView.getLayoutParams();
+        rvLp.height = recyclerViewHeight;
+        mRecyclerView.setLayoutParams(rvLp);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitle;
+        ImageView ivMore;
+        RecyclerView recyclerView;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTitle = itemView.findViewById(R.id.tv_title);
+            ivMore = itemView.findViewById(R.id.iv_more);
+            recyclerView = itemView.findViewById(R.id.recyclerView);
+        }
+    }
+}

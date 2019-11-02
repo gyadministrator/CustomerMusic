@@ -34,4 +34,16 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.5.0'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+    // Retrofit库
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    // gson解析，可以自行替换
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    // 日志的拦截器，也可以自行选择
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    //加载对话框
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
 }

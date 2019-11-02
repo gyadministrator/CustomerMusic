@@ -3,7 +3,6 @@ package com.android.customer.music.activity;
 import android.content.Intent;
 import android.os.Handler;
 
-import com.android.customer.music.MainActivity;
 import com.android.customer.music.R;
 
 public class LauncherActivity extends BaseActivity {
