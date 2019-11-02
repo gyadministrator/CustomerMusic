@@ -1,7 +1,6 @@
 package com.android.customer.music.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.customer.music.R;
 import com.android.customer.music.activity.AlbumActivity;
+import com.android.customer.music.constant.Constants;
+import com.android.customer.music.helper.RetrofitHelper;
+import com.android.customer.music.model.MusicModel;
 
 import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Description: CustomerMusic
@@ -48,7 +57,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         setRecyclerViewHeight();
         //设置标题
         holder.tvTitle.setText(mTitle.get(position));
@@ -61,11 +70,50 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             }
         });
         //设置数据
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        holder.recyclerView.addItemDecoration(new DividerItemDecoration(mContext, RecyclerView.VERTICAL));
-        holder.recyclerView.setNestedScrollingEnabled(false);
-        linerAdapter = new LinearAdapter(mContext, holder.recyclerView);
-        holder.recyclerView.setAdapter(linerAdapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setData(holder, position);
+            }
+        }).start();
+    }
+
+    private void setData(final ViewHolder holder, int position) {
+        RetrofitHelper retrofitHelper = RetrofitHelper.getInstance();
+        Map<String, Object> params = retrofitHelper.getmParams();
+        params.put("method", Constants.METHOD_LIST);
+        params.put("type", mType.get(position));
+        params.put("size", 6);
+        params.put("offset", 0);
+        Observable<MusicModel> observable = retrofitHelper.initRetrofit().list(params);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MusicModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(MusicModel musicModel) {
+                        holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+                        holder.recyclerView.addItemDecoration(new DividerItemDecoration(mContext, RecyclerView.VERTICAL));
+                        holder.recyclerView.setNestedScrollingEnabled(false);
+                        linerAdapter = new LinearAdapter(mContext, holder.recyclerView);
+                        linerAdapter.setList(musicModel.getSong_list(), true);
+                        holder.recyclerView.setAdapter(linerAdapter);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override

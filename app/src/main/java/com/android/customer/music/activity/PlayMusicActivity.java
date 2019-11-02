@@ -1,43 +1,127 @@
 package com.android.customer.music.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.customer.music.R;
 import com.android.customer.music.constant.Constants;
+import com.android.customer.music.helper.LoadingDialogHelper;
+import com.android.customer.music.helper.RetrofitHelper;
+import com.android.customer.music.model.PlayMusicModel;
 import com.android.customer.music.view.PlayMusicView;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.Map;
+import java.util.Objects;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class PlayMusicActivity extends BaseActivity {
     private ImageView mIvBg;
     private PlayMusicView playMusicView;
+    private String songId;
+    private TextView tvName;
+    private TextView tvAuthor;
 
     @Override
     protected void initView() {
         mIvBg = fd(R.id.iv_bg);
         playMusicView = fd(R.id.play_music_view);
+        tvName = fd(R.id.tv_name);
+        tvAuthor = fd(R.id.tv_author);
     }
 
     @Override
     protected void initData() {
         //隐藏状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        Glide.with(this).load(Constants.DEFAULT_ALBUM_URL)
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String imageUrl = intent.getStringExtra("imageUrl");
+        String author = intent.getStringExtra("author");
+        songId = intent.getStringExtra("songId");
+        Glide.with(this).load(imageUrl)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 10)))
                 .into(mIvBg);
-
-        playMusicView.setMusicIcon(Constants.DEFAULT_ALBUM_URL);
-        playMusicView.playMusic(Constants.DEFAULT_MUSIC_URL);
+        tvAuthor.setText(author);
+        tvName.setText(name);
+        playMusicView.setMusicIcon(imageUrl);
     }
 
     @Override
     protected void initAction() {
+        playMusic(songId);
+    }
 
+    private void playMusic(String songId) {
+        LoadingDialogHelper.show(mActivity, "加载中...");
+        RetrofitHelper retrofitHelper = RetrofitHelper.getInstance();
+        Map<String, Object> params = retrofitHelper.getmParams();
+        params.put("method", Constants.METHOD_PLAY);
+        params.put("songid", songId);
+        Observable<PlayMusicModel> observable = retrofitHelper.initRetrofit().play(params);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<PlayMusicModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(PlayMusicModel playMusicModel) {
+                        if (TextUtils.isEmpty(playMusicModel.getBitrate().getFile_link())) {
+                            ToastUtils.showShort("该歌曲目前无法找到播放源");
+                        } else {
+                            playMusicView.playMusic(playMusicModel.getBitrate().getFile_link());
+                        }
+                    }
+
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onError(Throwable e) {
+                        LoadingDialogHelper.dismiss();
+                        ToastUtils.showShort(Objects.requireNonNull(e.getMessage()));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        LoadingDialogHelper.dismiss();
+                    }
+                });
+    }
+
+    /**
+     * 启动活动
+     *
+     * @param context  context
+     * @param imageUrl 图片地址
+     * @param name     标题
+     * @param author   作者
+     * @param songId   songId
+     */
+    public static void startActivity(Context context, String imageUrl, String name, String author, String songId) {
+        Intent intent = new Intent(context, PlayMusicActivity.class);
+        intent.putExtra("imageUrl", imageUrl);
+        intent.putExtra("name", name);
+        intent.putExtra("author", author);
+        intent.putExtra("songId", songId);
+        context.startActivity(intent);
     }
 
     public void onBackClick(View view) {

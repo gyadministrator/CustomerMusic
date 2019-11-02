@@ -25,6 +25,7 @@ public class NavigationView extends LinearLayout {
     private String title;
     private int srcBack;
     private int srcRight;
+    private TextView tvTitle;
 
     public NavigationView(Context context) {
         this(context, null);
@@ -46,14 +47,18 @@ public class NavigationView extends LinearLayout {
         init(context);
     }
 
+    public void setTitle(String title) {
+        tvTitle.setText(title);
+    }
+
     private void init(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.navigation, this);
         ImageView iv_back = view.findViewById(R.id.iv_back);
         ImageView iv_right = findViewById(R.id.iv_right);
-        TextView tv_title = findViewById(R.id.tv_title);
+        tvTitle = findViewById(R.id.tv_title);
 
         if (!"".equals(title)) {
-            tv_title.setText(title);
+            tvTitle.setText(title);
         }
 
         if (!showBack) {

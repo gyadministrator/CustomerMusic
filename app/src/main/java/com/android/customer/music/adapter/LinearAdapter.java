@@ -5,13 +5,19 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.customer.music.R;
 import com.android.customer.music.activity.PlayMusicActivity;
+import com.android.customer.music.model.MusicModel;
+import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 /**
  * Description: CustomerMusic
@@ -23,6 +29,13 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
     private View mItemView;
     private RecyclerView mRecyclerView;
     private boolean isCalculationRvHeight;
+    private List<MusicModel.SongListBean> list;
+    private boolean isFlag;
+
+    public void setList(List<MusicModel.SongListBean> list, boolean isFlag) {
+        this.list = list;
+        this.isFlag = isFlag;
+    }
 
     public LinearAdapter(Context mContext, RecyclerView mRecyclerView) {
         this.mContext = mContext;
@@ -38,13 +51,17 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        setRecyclerViewHeight();
-
+        if (isFlag) {
+            setRecyclerViewHeight();
+        }
+        final MusicModel.SongListBean bean = list.get(position);
+        holder.tvAuthor.setText(bean.getAuthor());
+        holder.tvName.setText(bean.getTitle());
+        Glide.with(mContext).load(bean.getPic_small()).into(holder.ivIcon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, PlayMusicActivity.class);
-                mContext.startActivity(intent);
+                PlayMusicActivity.startActivity(mContext, bean.getPic_big(), bean.getTitle(), bean.getAuthor(), bean.getSong_id());
             }
         });
     }
@@ -62,15 +79,23 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 6;
+        return list.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         View itemView;
+        ImageView ivIcon;
+        TextView tvName;
+        TextView tvAuthor;
+        ImageView ivPlay;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
+            ivIcon = itemView.findViewById(R.id.iv_icon);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvAuthor = itemView.findViewById(R.id.tv_author);
+            ivPlay = itemView.findViewById(R.id.iv_play);
         }
     }
 }

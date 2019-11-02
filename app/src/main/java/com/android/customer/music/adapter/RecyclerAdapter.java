@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.customer.music.R;
-import com.android.customer.music.constant.Constants;
+import com.android.customer.music.activity.PlayMusicActivity;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.view.WidthEqualHeightImageView;
 import com.bumptech.glide.Glide;
@@ -26,6 +26,7 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
     private Context mContext;
     private List<RecommendMusicModel.ResultBean.ListBean> list;
+    private View mItemView;
 
     public RecyclerAdapter(Context mContext, List<RecommendMusicModel.ResultBean.ListBean> list) {
         this.mContext = mContext;
@@ -42,7 +43,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        RecommendMusicModel.ResultBean.ListBean bean = list.get(position);
+        final RecommendMusicModel.ResultBean.ListBean bean = list.get(position);
         holder.tvName.setText(bean.getAlbum_title());
         String hot = bean.getHot();
         int num = Integer.parseInt(hot);
@@ -52,6 +53,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             holder.tvNum.setText((double) num / 10000 + "万");
         }
         Glide.with(mContext).load(bean.getPic_small()).into(holder.iv_album);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlayMusicActivity.startActivity(mContext, bean.getPic_big(), bean.getTitle(), bean.getAuthor(), bean.getSong_id());
+            }
+        });
     }
 
     @Override
@@ -66,6 +74,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            mItemView = itemView;
             iv_album = itemView.findViewById(R.id.iv_album);
             tvName = itemView.findViewById(R.id.tv_name);
             tvNum = itemView.findViewById(R.id.tv_num);

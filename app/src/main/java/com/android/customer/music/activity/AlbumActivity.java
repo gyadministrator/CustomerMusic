@@ -2,22 +2,38 @@ package com.android.customer.music.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.customer.music.R;
 import com.android.customer.music.adapter.LinearAdapter;
+import com.android.customer.music.adapter.MainAdapter;
+import com.android.customer.music.constant.Constants;
+import com.android.customer.music.helper.LoadingDialogHelper;
+import com.android.customer.music.helper.RetrofitHelper;
+import com.android.customer.music.model.MusicModel;
 import com.android.customer.music.view.NavigationView;
+import com.blankj.utilcode.util.ToastUtils;
+
+import java.util.Map;
+import java.util.Objects;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class AlbumActivity extends BaseActivity {
     private NavigationView navigation;
     private TextView tvTopTitle;
     private RecyclerView rv_linear;
     private LinearAdapter linerAdapter;
-    private String mTitle;
     private int mType;
 
     @Override
@@ -30,18 +46,54 @@ public class AlbumActivity extends BaseActivity {
     @Override
     protected void initData() {
         Intent intent = getIntent();
-        mTitle = intent.getStringExtra("title");
+        String mTitle = intent.getStringExtra("title");
         mType = intent.getIntExtra("type", 1);
-        rv_linear.setLayoutManager(new LinearLayoutManager(this));
-        rv_linear.addItemDecoration(new DividerItemDecoration(this, RecyclerView.VERTICAL));
-        rv_linear.setNestedScrollingEnabled(false);
-        linerAdapter = new LinearAdapter(mActivity, rv_linear);
-        rv_linear.setAdapter(linerAdapter);
+        tvTopTitle.setText(mTitle);
+        navigation.setTitle(mTitle);
     }
 
     @Override
     protected void initAction() {
+        setData();
+    }
 
+    private void setData() {
+        LoadingDialogHelper.show(mActivity, "加载中...");
+        RetrofitHelper retrofitHelper = RetrofitHelper.getInstance();
+        Map<String, Object> params = retrofitHelper.getmParams();
+        params.put("method", Constants.METHOD_LIST);
+        params.put("type", mType);
+        params.put("size", 20);
+        params.put("offset", 0);
+        Observable<MusicModel> observable = retrofitHelper.initRetrofit().list(params);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MusicModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(MusicModel musicModel) {
+                        rv_linear.setLayoutManager(new LinearLayoutManager(mActivity));
+                        rv_linear.addItemDecoration(new DividerItemDecoration(mActivity, RecyclerView.VERTICAL));
+                        linerAdapter = new LinearAdapter(mActivity, rv_linear);
+                        linerAdapter.setList(musicModel.getSong_list(), false);
+                        rv_linear.setAdapter(linerAdapter);
+                    }
+
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtils.showShort(Objects.requireNonNull(e.getMessage()));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        LoadingDialogHelper.dismiss();
+                    }
+                });
     }
 
     /**
