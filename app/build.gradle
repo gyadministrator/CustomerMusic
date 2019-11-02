@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'realm-android'
 android {
     compileSdkVersion 29
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.android.customer.music"
         minSdkVersion 15

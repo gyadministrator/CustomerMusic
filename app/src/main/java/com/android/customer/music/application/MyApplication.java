@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.blankj.utilcode.util.Utils;
 
+import io.realm.Realm;
+
 /**
  * Description: CustomerMusic
  * Created by gy(1984629668@qq.com)
@@ -14,5 +16,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
+        Realm.init(this);
     }
 }

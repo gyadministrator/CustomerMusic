@@ -70,14 +70,21 @@
                     android:background="@color/mainColor" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="4dp"
+                    android:layout_weight="1"
                     android:text="@string/new_music"
                     android:textColor="#888888"
                     android:textSize="22sp"
                     android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/iv_more"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@mipmap/more" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
