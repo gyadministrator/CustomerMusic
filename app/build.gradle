@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 android {
+    signingConfigs {
+        config {
+            storeFile file('../customerMusic.jks')
+            storePassword 'gy123456'
+            keyAlias = 'customerMusic'
+            keyPassword 'gy123456'
+        }
+    }
     compileSdkVersion 29
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
@@ -13,8 +21,13 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 }
