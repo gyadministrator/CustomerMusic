@@ -50,11 +50,10 @@ public class MediaPlayerHelper {
          * 2.设置播放音乐路径
          * 3.准备播放
          */
-        mPath = path;
-        if (mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer.isPlaying() || !path.equals(mPath)) {
             mMediaPlayer.reset();
         }
-
+        mPath = path;
         try {
             mMediaPlayer.setDataSource(mContext, Uri.parse(path));
         } catch (IOException e) {
@@ -67,6 +66,15 @@ public class MediaPlayerHelper {
             public void onPrepared(MediaPlayer mediaPlayer) {
                 if (onMediaPlayerHelperListener != null) {
                     onMediaPlayerHelperListener.onPrepared(mediaPlayer);
+                }
+            }
+        });
+
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if (onMediaPlayerHelperListener != null) {
+                    onMediaPlayerHelperListener.onCompletion(mediaPlayer);
                 }
             }
         });
@@ -98,6 +106,8 @@ public class MediaPlayerHelper {
 
     public interface OnMediaPlayerHelperListener {
         void onPrepared(MediaPlayer mediaPlayer);
+
+        void onCompletion(MediaPlayer mediaPlayer);
     }
 
 }

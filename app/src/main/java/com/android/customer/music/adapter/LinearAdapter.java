@@ -1,5 +1,6 @@
 package com.android.customer.music.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
         return new ViewHolder(mItemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (isFlag) {
@@ -56,12 +58,17 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
         }
         final MusicModel.SongListBean bean = list.get(position);
         holder.tvAuthor.setText(bean.getAuthor());
-        holder.tvName.setText(bean.getTitle());
+        final String title = bean.getTitle();
+        if (title.length() > 20) {
+            holder.tvName.setText(title.substring(0, 20) + "...");
+        } else {
+            holder.tvName.setText(title);
+        }
         Glide.with(mContext).load(bean.getPic_small()).into(holder.ivIcon);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PlayMusicActivity.startActivity(mContext, bean.getPic_big(), bean.getTitle(), bean.getAuthor(), bean.getSong_id());
+                PlayMusicActivity.startActivity(mContext, bean.getPic_big(), title, bean.getAuthor(), bean.getSong_id());
             }
         });
     }

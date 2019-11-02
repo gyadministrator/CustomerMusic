@@ -1,8 +1,12 @@
 package com.android.customer.music.view;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.IBinder;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,9 @@ import androidx.annotation.RequiresApi;
 
 import com.android.customer.music.R;
 import com.android.customer.music.helper.MediaPlayerHelper;
+import com.android.customer.music.model.Music;
+import com.android.customer.music.model.MusicModel;
+import com.android.customer.music.service.MusicService;
 import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -29,12 +36,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PlayMusicView extends FrameLayout implements View.OnClickListener {
     private Context mContext;
     private View mView;
-    private boolean isPlaying;
+    private boolean isPlaying, isBindService;
     private CircleImageView mIvIcon;
     private ImageView mIvNeedle, mIvPlay;
     private FrameLayout mFlPlayMusic;
     private MediaPlayerHelper mMediaPlayerHelper;
     private String mPath;
+    private Intent mServiceIntent;
+    private MusicService.MusicBind mMusicBind;
+    private Music mMusic;
     private Animation mPlayMusicAnim, mPlayNeedleAnim, mStopNeedleAnim;
 
     public PlayMusicView(@NonNull Context context) {
@@ -104,8 +114,15 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
                 public void onPrepared(MediaPlayer mediaPlayer) {
                     mMediaPlayerHelper.start();
                 }
+
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+
+                }
             });
         }
+
+        startMusicService();
     }
 
     /**
@@ -117,6 +134,10 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
         mFlPlayMusic.clearAnimation();
         mIvNeedle.setAnimation(mStopNeedleAnim);
         mMediaPlayerHelper.pause();
+
+        if (mMusicBind != null) {
+            mMusicBind.stopMusic();
+        }
     }
 
     /**
@@ -126,6 +147,10 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
         Glide.with(mContext)
                 .load(icon)
                 .into(mIvIcon);
+    }
+
+    public void setMusic(Music music) {
+        mMusic = music;
     }
 
     @Override
@@ -143,4 +168,45 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
             playMusic(mPath);
         }
     }
+
+    /**
+     * 启动音乐服务
+     */
+    private void startMusicService() {
+        if (mServiceIntent == null) {
+            mServiceIntent = new Intent(mContext, MusicService.class);
+            mContext.startService(mServiceIntent);
+        } else {
+            mMusicBind.playMusic();
+        }
+        //绑定service,当前service未绑定，绑定服务
+        if (!isBindService) {
+            isBindService = true;
+            mContext.bindService(mServiceIntent, conn, Context.BIND_AUTO_CREATE);
+        }
+    }
+
+    /**
+     * 解除绑定
+     */
+    public void destory() {
+        if (isBindService) {
+            isBindService = false;
+            mContext.unbindService(conn);
+        }
+    }
+
+    ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            mMusicBind = (MusicService.MusicBind) iBinder;
+            mMusicBind.setMusic(mMusic);
+            mMusicBind.playMusic();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
 }

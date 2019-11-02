@@ -44,7 +44,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final RecommendMusicModel.ResultBean.ListBean bean = list.get(position);
-        holder.tvName.setText(bean.getAlbum_title());
+        final String title = bean.getTitle();
+        if (title.length() > 7) {
+            holder.tvName.setText(title.substring(0, 7) + "...");
+        } else {
+            holder.tvName.setText(title);
+        }
         String hot = bean.getHot();
         int num = Integer.parseInt(hot);
         if (num < 10000) {
@@ -57,7 +62,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PlayMusicActivity.startActivity(mContext, bean.getPic_big(), bean.getTitle(), bean.getAuthor(), bean.getSong_id());
+                PlayMusicActivity.startActivity(mContext, bean.getPic_big(), title, bean.getAuthor(), bean.getSong_id());
             }
         });
     }

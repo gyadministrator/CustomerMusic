@@ -15,6 +15,7 @@ import com.android.customer.music.R;
 import com.android.customer.music.constant.Constants;
 import com.android.customer.music.helper.LoadingDialogHelper;
 import com.android.customer.music.helper.RetrofitHelper;
+import com.android.customer.music.model.Music;
 import com.android.customer.music.model.PlayMusicModel;
 import com.android.customer.music.view.PlayMusicView;
 import com.blankj.utilcode.util.ToastUtils;
@@ -37,6 +38,7 @@ public class PlayMusicActivity extends BaseActivity {
     private String songId;
     private TextView tvName;
     private TextView tvAuthor;
+    private Music mMusic;
 
     @Override
     protected void initView() {
@@ -61,6 +63,9 @@ public class PlayMusicActivity extends BaseActivity {
         tvAuthor.setText(author);
         tvName.setText(name);
         playMusicView.setMusicIcon(imageUrl);
+        mMusic = new Music();
+        mMusic.setAuthor(author);
+        mMusic.setTitle(name);
     }
 
     @Override
@@ -88,6 +93,8 @@ public class PlayMusicActivity extends BaseActivity {
                         if (TextUtils.isEmpty(playMusicModel.getBitrate().getFile_link())) {
                             ToastUtils.showShort("该歌曲目前无法找到播放源");
                         } else {
+                            mMusic.setPath(playMusicModel.getBitrate().getFile_link());
+                            playMusicView.setMusic(mMusic);
                             playMusicView.playMusic(playMusicModel.getBitrate().getFile_link());
                         }
                     }
@@ -131,5 +138,11 @@ public class PlayMusicActivity extends BaseActivity {
     @Override
     protected int getContentView() {
         return R.layout.activity_play_music;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        playMusicView.destory();
     }
 }

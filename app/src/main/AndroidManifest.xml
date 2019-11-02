@@ -15,6 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true"
+            android:exported="true"/>
+
         <activity
             android:name=".activity.AlbumActivity"
             android:screenOrientation="portrait" />
