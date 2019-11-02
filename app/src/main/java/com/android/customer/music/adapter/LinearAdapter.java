@@ -43,6 +43,12 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
         this.mRecyclerView = mRecyclerView;
     }
 
+    public void setData(List<MusicModel.SongListBean> more) {
+        list.addAll(more);
+        notifyDataSetChanged();
+        notifyItemChanged(list.size() - more.size());
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,8 +65,8 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.ViewHolder
         final MusicModel.SongListBean bean = list.get(position);
         holder.tvAuthor.setText(bean.getAuthor());
         final String title = bean.getTitle();
-        if (title.length() > 20) {
-            holder.tvName.setText(title.substring(0, 20) + "...");
+        if (title.length() > 15) {
+            holder.tvName.setText(title.substring(0, 15) + "...");
         } else {
             holder.tvName.setText(title);
         }

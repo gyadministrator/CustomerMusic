@@ -45,8 +45,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final RecommendMusicModel.ResultBean.ListBean bean = list.get(position);
         final String title = bean.getTitle();
-        if (title.length() > 7) {
-            holder.tvName.setText(title.substring(0, 7) + "...");
+        if (title.length() > 5) {
+            holder.tvName.setText(title.substring(0, 5) + "...");
         } else {
             holder.tvName.setText(title);
         }

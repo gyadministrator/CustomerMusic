@@ -18,6 +18,7 @@ import com.android.customer.music.activity.AlbumActivity;
 import com.android.customer.music.constant.Constants;
 import com.android.customer.music.helper.RetrofitHelper;
 import com.android.customer.music.model.MusicModel;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     private RecyclerView mRecyclerView;
     private boolean isCalculationRvHeight;
     private View mItemView;
+
+    public interface OnMainAdapterListener {
+        void success();
+    }
+
+    private OnMainAdapterListener onMainAdapterListener;
+
+    public void setOnMainAdapterListener(OnMainAdapterListener onMainAdapterListener) {
+        this.onMainAdapterListener = onMainAdapterListener;
+    }
 
     public MainAdapter(Context context, RecyclerView recyclerView, List<String> title, List<Integer> type) {
         mContext = context;
@@ -106,12 +117,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        onMainAdapterListener.success();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        onMainAdapterListener.success();
                     }
                 });
     }
