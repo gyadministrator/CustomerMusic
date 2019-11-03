@@ -1,91 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <com.android.customer.music.view.NavigationView
-        android:id="@+id/navigation"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:showBack="false"
-        app:showRight="true"
-        app:srcRight="@mipmap/search"
-        app:title="@string/app_name" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ScrollView
+        <com.android.customer.music.view.NavigationView
+            android:id="@+id/navigation"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:showBack="false"
+            app:showRight="true"
+            app:srcRight="@mipmap/search"
+            app:title="@string/app_name" />
 
-            <LinearLayout
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/marginSize"
-                    android:layout_marginLeft="@dimen/marginSize"
-                    android:layout_marginTop="@dimen/marginSize"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <View
-                        android:layout_width="4dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@color/mainColor" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginLeft="4dp"
-                        android:text="@string/recommend_music"
-                        android:textColor="#888888"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:layout_marginStart="@dimen/marginSize"
+                        android:layout_marginLeft="@dimen/marginSize"
+                        android:layout_marginTop="@dimen/marginSize"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/mainColor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="4dp"
+                            android:text="@string/recommend_music"
+                            android:textColor="#888888"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                        android:id="@+id/grid_shimmer_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:shimmer_demo_angle="20"
+                        app:shimmer_demo_child_count="10"
+                        app:shimmer_demo_grid_child_count="3"
+                        app:shimmer_demo_layout_manager_type="grid" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_recommend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp" />
+
+                    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                        android:id="@+id/shimmer_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:shimmer_demo_angle="20"
+                        app:shimmer_demo_child_count="10"
+                        app:shimmer_demo_grid_child_count="6"
+                        app:shimmer_demo_layout_manager_type="linear_vertical" />
                 </LinearLayout>
+            </ScrollView>
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                    android:id="@+id/grid_shimmer_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="10"
-                    app:shimmer_demo_grid_child_count="3"
-                    app:shimmer_demo_layout_manager_type="grid" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="@string/bottom_tip"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_recommend"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
-
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                    android:id="@+id/shimmer_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:shimmer_demo_angle="20"
-                    app:shimmer_demo_child_count="10"
-                    app:shimmer_demo_grid_child_count="6"
-                    app:shimmer_demo_layout_manager_type="linear_vertical" />
-
-            </LinearLayout>
-        </ScrollView>
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-</LinearLayout>
+        <include layout="@layout/bottom_bar" />
+    </RelativeLayout>
+</FrameLayout>

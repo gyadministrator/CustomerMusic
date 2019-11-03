@@ -4,6 +4,11 @@
         <item name="colorPrimaryDark">@color/mainColor</item>
     </style>
 
+    <style name="AppTheme.PlayMusicTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
     <!--应用启动页主题-->
     <style name="AppTheme.StartingWindowTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/layer_launcher</item>

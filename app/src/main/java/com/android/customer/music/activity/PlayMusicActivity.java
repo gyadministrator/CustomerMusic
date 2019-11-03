@@ -51,7 +51,7 @@ public class PlayMusicActivity extends BaseActivity {
     @Override
     protected void initData() {
         //隐藏状态栏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String imageUrl = intent.getStringExtra("imageUrl");

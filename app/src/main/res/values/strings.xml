@@ -4,4 +4,5 @@
     <string name="new_music">最新音乐</string>
     <string name="search">搜索</string>
     <string name="tip">\n温馨提示： \n你可以搜索歌手，歌名，专辑</string>
+    <string name="bottom_tip">我也是有底的呀</string>
 </resources>

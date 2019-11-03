@@ -3,6 +3,7 @@ package com.android.customer.music.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -37,6 +38,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private ShimmerRecyclerView mShimmerRecyclerView;
     private ShimmerRecyclerView gridShimmerRecyclerView;
     private NavigationView mNavigationView;
+    private LinearLayout llBottomBar;
 
     @Override
     protected void initView() {
@@ -48,6 +50,8 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         gridShimmerRecyclerView = fd(R.id.grid_shimmer_recycler_view);
         mNavigationView = fd(R.id.navigation);
         mNavigationView.setRightClickListener(this);
+        llBottomBar = fd(R.id.ll_bottom_bar);
+        llBottomBar.setOnClickListener(bottomBarClickListener);
     }
 
     @Override
@@ -62,7 +66,6 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         mainPresenter.getRecommendList();
         mShimmerRecyclerView.showShimmerAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, RecyclerView.VERTICAL));
         recyclerView.setNestedScrollingEnabled(false);
         mainAdapter = new MainAdapter(this, recyclerView, mainPresenter.getTitles(), mainPresenter.getTypes());
         mainAdapter.setOnMainAdapterListener(this);
@@ -129,4 +132,11 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         Intent intent = new Intent(mActivity, SearchActivity.class);
         startActivity(intent);
     }
+
+    private View.OnClickListener bottomBarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            //底部栏点击事件
+        }
+    };
 }
