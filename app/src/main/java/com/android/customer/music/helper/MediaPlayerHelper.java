@@ -1,5 +1,7 @@
 package com.android.customer.music.helper;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import java.io.IOException;
  * Created Time on 2019/11/1 23:18
  */
 public class MediaPlayerHelper {
+    @SuppressLint("StaticFieldLeak")
     private static MediaPlayerHelper instance;
     private Context mContext;
     private MediaPlayer mMediaPlayer;
@@ -78,6 +81,25 @@ public class MediaPlayerHelper {
                 }
             }
         });
+
+        mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            @Override
+            public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+                LoadingDialogHelper.show((Activity) mContext, "缓存进度" + i + "%");
+                if (i==100){
+                    LoadingDialogHelper.dismiss();
+                }
+            }
+        });
+
+        mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+            @Override
+            public void onSeekComplete(MediaPlayer mediaPlayer) {
+                if (mediaPlayer.getCurrentPosition() == mediaPlayer.getDuration()) {
+                    onMediaPlayerHelperListener.onFinish(mediaPlayer);
+                }
+            }
+        });
     }
 
     /**
@@ -108,6 +130,8 @@ public class MediaPlayerHelper {
         void onPrepared(MediaPlayer mediaPlayer);
 
         void onCompletion(MediaPlayer mediaPlayer);
+
+        void onFinish(MediaPlayer mediaPlayer);
     }
 
 }

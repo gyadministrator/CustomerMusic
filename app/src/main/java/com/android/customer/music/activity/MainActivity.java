@@ -1,9 +1,11 @@
 package com.android.customer.music.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +17,7 @@ import com.android.customer.music.adapter.RecyclerAdapter;
 import com.android.customer.music.helper.LoadingDialogHelper;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.presenter.MainPresenter;
-import com.android.customer.music.utils.NotificationPermissionUtils;
+import com.android.customer.music.utils.NotificationUtil;
 import com.android.customer.music.view.MainView;
 import com.android.customer.music.view.NavigationView;
 import com.android.customer.music.view.RecyclerDecoration;
@@ -53,6 +55,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         gridShimmerRecyclerView.showShimmerAdapter();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void initAction() {
         mainPresenter = new MainPresenter<MainView>(this);
@@ -67,10 +70,9 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         checkPermission();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void checkPermission() {
-        if (NotificationPermissionUtils.isNotificationEnabled(this)) {
-            NotificationPermissionUtils.openPermission(this);
-        }
+        NotificationUtil.checkNotificationEnable(mActivity);
     }
 
     @Override
@@ -110,6 +112,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         LoadingDialogHelper.dismiss();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         initAction();

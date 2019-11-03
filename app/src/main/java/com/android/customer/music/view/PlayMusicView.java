@@ -22,8 +22,8 @@ import androidx.annotation.RequiresApi;
 import com.android.customer.music.R;
 import com.android.customer.music.helper.MediaPlayerHelper;
 import com.android.customer.music.model.Music;
-import com.android.customer.music.model.MusicModel;
 import com.android.customer.music.service.MusicService;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -118,6 +118,12 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
 
+                }
+
+                @Override
+                public void onFinish(MediaPlayer mediaPlayer) {
+                    //stopMusic();
+                    ToastUtils.showShort("播放完了");
                 }
             });
         }

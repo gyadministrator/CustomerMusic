@@ -91,9 +91,7 @@ public class PlayMusicActivity extends BaseActivity {
 
                     @Override
                     public void onNext(PlayMusicModel playMusicModel) {
-                        if (TextUtils.isEmpty(playMusicModel.getBitrate().getFile_link())) {
-                            ToastUtils.showShort("该歌曲目前无法找到播放源");
-                        } else {
+                        if (!TextUtils.isEmpty(playMusicModel.getBitrate().getFile_link())) {
                             mMusic.setPath(playMusicModel.getBitrate().getFile_link());
                             playMusicView.setMusic(mMusic);
                             playMusicView.playMusic(playMusicModel.getBitrate().getFile_link());

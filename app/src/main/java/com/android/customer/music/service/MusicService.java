@@ -11,11 +11,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -23,7 +21,7 @@ import com.android.customer.music.R;
 import com.android.customer.music.activity.MainActivity;
 import com.android.customer.music.helper.MediaPlayerHelper;
 import com.android.customer.music.model.Music;
-import com.android.customer.music.utils.NotificationPermissionUtils;
+import com.android.customer.music.utils.NotificationUtil;
 import com.android.customer.music.utils.NotificationUtils;
 
 import java.io.IOException;
@@ -70,11 +68,11 @@ public class MusicService extends Service {
                 public void run() {
                     if (music.getImageUrl() != null) {
                         bitmap = returnBitmap(music.getImageUrl());
-                        if (NotificationPermissionUtils.isNotificationEnabled(mContext) && bitmap != null) {
+                        if (NotificationUtil.isNotificationEnabled(mContext) && bitmap != null) {
                             NotificationUtils.sendCustomNotification(mContext, mMusic, bitmap, R.mipmap.stop);
                         }
                     }else {
-                        if (NotificationPermissionUtils.isNotificationEnabled(mContext)) {
+                        if (NotificationUtil.isNotificationEnabled(mContext)) {
                             NotificationUtils.sendCustomNotification(mContext, mMusic, bitmap, R.mipmap.stop);
                         }
                     }
@@ -130,6 +128,11 @@ public class MusicService extends Service {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         stopSelf();
+                    }
+
+                    @Override
+                    public void onFinish(MediaPlayer mediaPlayer) {
+
                     }
                 });
             }
