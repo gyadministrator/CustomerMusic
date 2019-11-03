@@ -12,6 +12,7 @@ import com.android.customer.music.adapter.RecyclerAdapter;
 import com.android.customer.music.helper.LoadingDialogHelper;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.presenter.MainPresenter;
+import com.android.customer.music.utils.NotificationPermissionUtils;
 import com.android.customer.music.view.MainView;
 import com.android.customer.music.view.RecyclerDecoration;
 import com.blankj.utilcode.util.ToastUtils;
@@ -56,6 +57,13 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         mainAdapter = new MainAdapter(this, recyclerView, mainPresenter.getTitles(), mainPresenter.getTypes());
         mainAdapter.setOnMainAdapterListener(this);
         recyclerView.setAdapter(mainAdapter);
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        if (NotificationPermissionUtils.isNotificationEnabled(this)) {
+            NotificationPermissionUtils.openPermission(this);
+        }
     }
 
     @Override

@@ -197,6 +197,7 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
     }
 
     ServiceConnection conn = new ServiceConnection() {
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mMusicBind = (MusicService.MusicBind) iBinder;

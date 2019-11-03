@@ -42,4 +42,14 @@ public class Music extends BaseDataModel {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    @Override
+    public String toString() {
+        return "Music{" +
+                "imageUrl='" + imageUrl + '\'' +
+                ", path='" + path + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                '}';
+    }
 }

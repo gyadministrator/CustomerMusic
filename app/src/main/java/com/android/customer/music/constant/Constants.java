@@ -18,4 +18,10 @@ public class Constants {
     public static final String METHOD_SINGER = "baidu.ting.artist.getInfo";
     public static final String METHOD_SINGER_LIST = "baidu.ting.artist.getSongList";
 
+    public static final String PLAY = "play";
+
+    public static final String NEXT = "next";
+
+    public static final String CANCEL = "cancel";
+
 }

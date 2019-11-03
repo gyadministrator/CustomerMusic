@@ -66,6 +66,7 @@ public class PlayMusicActivity extends BaseActivity {
         mMusic = new Music();
         mMusic.setAuthor(author);
         mMusic.setTitle(name);
+        mMusic.setImageUrl(imageUrl);
     }
 
     @Override
