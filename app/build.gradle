@@ -18,6 +18,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //必须要保证所有的flavor 都属于同一个维度
+        flavorDimensions "default"
     }
     buildTypes {
         release {
@@ -25,14 +27,40 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "${variant.name}-v${variant.versionName}-${releaseTime()}.apk"
+                }
+            }
         }
         debug {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "${variant.name}-v${variant.versionName}-${releaseTime()}.apk"
+                }
+            }
         }
     }
+
+    productFlavors {
+        //根据渠道配置
+        customer_music_debug {
+            buildConfigField "String", "CHANNEL", "\"music_debug\""
+        }
+        customer_music_release {
+            buildConfigField "String", "CHANNEL", "\"music_release\""
+        }
+    }
+}
+
+static def releaseTime() {
+    return new Date().format("yyyy.MM.dd", TimeZone.getTimeZone("GMT+8"))
 }
 
 dependencies {

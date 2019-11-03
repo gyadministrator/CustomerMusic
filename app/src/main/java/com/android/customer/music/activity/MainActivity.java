@@ -1,5 +1,8 @@
 package com.android.customer.music.activity;
 
+import android.content.Intent;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -14,6 +17,7 @@ import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.presenter.MainPresenter;
 import com.android.customer.music.utils.NotificationPermissionUtils;
 import com.android.customer.music.view.MainView;
+import com.android.customer.music.view.NavigationView;
 import com.android.customer.music.view.RecyclerDecoration;
 import com.blankj.utilcode.util.ToastUtils;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
@@ -21,7 +25,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-public class MainActivity extends BaseActivity implements MainView, OnRefreshListener, MainAdapter.OnMainAdapterListener {
+public class MainActivity extends BaseActivity implements MainView, OnRefreshListener, MainAdapter.OnMainAdapterListener, NavigationView.OnRightClickListener {
     private RecyclerView rv_recommend;
     private RecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
@@ -30,6 +34,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private SmartRefreshLayout refreshLayout;
     private ShimmerRecyclerView mShimmerRecyclerView;
     private ShimmerRecyclerView gridShimmerRecyclerView;
+    private NavigationView mNavigationView;
 
     @Override
     protected void initView() {
@@ -39,6 +44,8 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         refreshLayout.setOnRefreshListener(this);
         mShimmerRecyclerView = fd(R.id.shimmer_recycler_view);
         gridShimmerRecyclerView = fd(R.id.grid_shimmer_recycler_view);
+        mNavigationView = fd(R.id.navigation);
+        mNavigationView.setRightClickListener(this);
     }
 
     @Override
@@ -112,5 +119,11 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     @Override
     public void success() {
         mShimmerRecyclerView.hideShimmerAdapter();
+    }
+
+    @Override
+    public void clickRight(View view) {
+        Intent intent = new Intent(mActivity, SearchActivity.class);
+        startActivity(intent);
     }
 }

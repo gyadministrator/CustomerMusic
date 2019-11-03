@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
+        <activity android:name=".activity.SearchActivity"></activity>
+
         <service
             android:name=".service.MusicService"
             android:enabled="true"

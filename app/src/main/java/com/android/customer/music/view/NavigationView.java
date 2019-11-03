@@ -41,8 +41,8 @@ public class NavigationView extends LinearLayout {
         title = typedArray.getString(R.styleable.NavigationView_title);
         showBack = typedArray.getBoolean(R.styleable.NavigationView_showBack, true);
         showRight = typedArray.getBoolean(R.styleable.NavigationView_showRight, true);
-        srcBack = typedArray.getInt(R.styleable.NavigationView_srcBack, 0);
-        srcRight = typedArray.getInt(R.styleable.NavigationView_srcRight, 0);
+        srcBack = typedArray.getResourceId(R.styleable.NavigationView_srcBack, 0);
+        srcRight = typedArray.getResourceId(R.styleable.NavigationView_srcRight, 0);
         typedArray.recycle();
         init(context);
     }

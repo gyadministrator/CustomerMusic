@@ -8,10 +8,12 @@
     tools:context=".activity.MainActivity">
 
     <com.android.customer.music.view.NavigationView
+        android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:showBack="false"
         app:showRight="true"
+        app:srcRight="@mipmap/search"
         app:title="@string/app_name" />
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout

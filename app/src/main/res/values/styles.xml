@@ -15,8 +15,8 @@
         <attr name="title" format="string" />
         <attr name="showBack" format="boolean" />
         <attr name="showRight" format="boolean" />
-        <attr name="srcBack" format="integer" />
-        <attr name="srcRight" format="integer" />
+        <attr name="srcBack" format="reference" />
+        <attr name="srcRight" format="reference" />
     </declare-styleable>
 
 </resources>
