@@ -91,15 +91,6 @@ public class MediaPlayerHelper {
                 }
             }
         });
-
-        mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
-            @Override
-            public void onSeekComplete(MediaPlayer mediaPlayer) {
-                if (mediaPlayer.getCurrentPosition() == mediaPlayer.getDuration()) {
-                    onMediaPlayerHelperListener.onFinish(mediaPlayer);
-                }
-            }
-        });
     }
 
     /**
@@ -130,8 +121,6 @@ public class MediaPlayerHelper {
         void onPrepared(MediaPlayer mediaPlayer);
 
         void onCompletion(MediaPlayer mediaPlayer);
-
-        void onFinish(MediaPlayer mediaPlayer);
     }
 
 }

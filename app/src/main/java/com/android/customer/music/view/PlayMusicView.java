@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -119,12 +120,6 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
                 public void onCompletion(MediaPlayer mediaPlayer) {
 
                 }
-
-                @Override
-                public void onFinish(MediaPlayer mediaPlayer) {
-                    //stopMusic();
-                    ToastUtils.showShort("播放完了");
-                }
             });
         }
 
@@ -213,7 +208,6 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-
         }
     };
 }

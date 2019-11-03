@@ -129,11 +129,6 @@ public class MusicService extends Service {
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         stopSelf();
                     }
-
-                    @Override
-                    public void onFinish(MediaPlayer mediaPlayer) {
-
-                    }
                 });
             }
         }
