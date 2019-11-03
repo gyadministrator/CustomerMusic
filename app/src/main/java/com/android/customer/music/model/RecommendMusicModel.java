@@ -7,7 +7,7 @@ import java.util.List;
  * Created by gy(1984629668@qq.com)
  * Created Time on 2019/11/2 16:32
  */
-public class RecommendMusicModel extends BaseDataModel{
+public class RecommendMusicModel extends BaseModel {
 
     /**
      * error_code : 22000

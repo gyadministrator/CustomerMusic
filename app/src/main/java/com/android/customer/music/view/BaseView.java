@@ -1,6 +1,5 @@
 package com.android.customer.music.view;
 
-import com.android.customer.music.model.BaseDataModel;
 import com.android.customer.music.model.BaseModel;
 
 /**
@@ -8,7 +7,7 @@ import com.android.customer.music.model.BaseModel;
  * Created by gy(1984629668@qq.com)
  * Created Time on 2019/11/2 18:33
  */
-public interface BaseView<T extends BaseDataModel> {
+public interface BaseView<T extends BaseModel> {
     /**
      * 请求成功
      *

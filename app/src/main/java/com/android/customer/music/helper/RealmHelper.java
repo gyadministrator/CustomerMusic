@@ -1,14 +1,11 @@
 package com.android.customer.music.helper;
 
-import com.android.customer.music.model.BaseModel;
+import com.android.customer.music.model.Music;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import io.realm.ImportFlag;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -38,29 +35,18 @@ public class RealmHelper {
     }
 
     /**
-     * 获取唯一标识
-     *
-     * @return 字符串
-     */
-    private String uuid() {
-        UUID uuid = UUID.randomUUID();
-        String s = uuid.toString();
-        return s.replaceAll("-", "");
-    }
-
-
-    /**
      * 保存实体
      *
-     * @param baseModel 实体
+     * @param music 实体
      */
-    public BaseModel saveObject(BaseModel baseModel) {
+    public void save(Music music) {
         mRealm.beginTransaction();
-        baseModel.setId(uuid());
-        baseModel.setCreateTime(new Date());
-        mRealm.copyToRealm(baseModel);
+        Music realmObject = mRealm.createObject(Music.class, music.getSongId());
+        realmObject.setImageUrl(music.getImageUrl());
+        realmObject.setPath(music.getPath());
+        realmObject.setTitle(music.getTitle());
+        realmObject.setAuthor(music.getAuthor());
         mRealm.commitTransaction();
-        return mRealm.where(BaseModel.class).findFirstAsync();
     }
 
     /**
@@ -69,9 +55,9 @@ public class RealmHelper {
      * @param param 条件
      * @return
      */
-    public List<BaseModel> list(Map<String, Object> param) {
+    public List<Music> list(Map<String, Object> param) {
         mRealm.beginTransaction();
-        RealmQuery<BaseModel> realmQuery = mRealm.where(BaseModel.class);
+        RealmQuery<Music> realmQuery = mRealm.where(Music.class);
         for (String key : param.keySet()) {
             Object value = param.get(key);
             if (value instanceof Boolean) {
@@ -94,38 +80,57 @@ public class RealmHelper {
                 realmQuery.equalTo(key, (Date) value);
             }
         }
-        RealmResults<BaseModel> models = realmQuery.findAllAsync();
+        RealmResults<Music> models = realmQuery.findAll();
         mRealm.commitTransaction();
         return models.subList(0, models.size());
     }
 
     /**
+     * 查询第一条音乐
+     *
+     * @return
+     */
+    public Music getOne() {
+        mRealm.beginTransaction();
+        Music music = mRealm.where(Music.class)
+                .findFirst();
+        mRealm.commitTransaction();
+        return music;
+    }
+
+    /**
      * 修改实体
      *
-     * @param baseModel 实体
+     * @param music 实体
      */
-    public void update(BaseModel baseModel) {
+    public void update(Music music) {
         mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(baseModel);
+        mRealm.copyToRealmOrUpdate(music);
         mRealm.commitTransaction();
     }
 
     /**
      * 删除实体
      *
-     * @param baseModel 实体
+     * @param music 实体
      */
-    public void delete(BaseModel baseModel) {
+    public void delete(Music music) {
         mRealm.beginTransaction();
-        final RealmResults<BaseModel> models = mRealm.where(BaseModel.class).
-                equalTo("id", baseModel.getId()).
-                findAllAsync();
-        mRealm.executeTransactionAsync(new Realm.Transaction() {
+        mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                models.deleteAllFromRealm();
+                realm.deleteAll();
             }
         });
         mRealm.commitTransaction();
+    }
+
+    /**
+     * 关闭数据库连接
+     */
+    public void destory() {
+        if (mRealm != null) {
+            mRealm.close();
+        }
     }
 }

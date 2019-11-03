@@ -3,11 +3,12 @@ package com.android.customer.music.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,18 +16,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.customer.music.R;
 import com.android.customer.music.adapter.MainAdapter;
 import com.android.customer.music.adapter.RecyclerAdapter;
+import com.android.customer.music.constant.Constants;
+import com.android.customer.music.event.MusicEvent;
 import com.android.customer.music.helper.LoadingDialogHelper;
+import com.android.customer.music.helper.RealmHelper;
+import com.android.customer.music.model.Music;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.presenter.MainPresenter;
 import com.android.customer.music.utils.NotificationUtil;
+import com.android.customer.music.utils.SharedPreferenceUtil;
 import com.android.customer.music.view.MainView;
 import com.android.customer.music.view.NavigationView;
 import com.android.customer.music.view.RecyclerDecoration;
 import com.blankj.utilcode.util.ToastUtils;
+import com.bumptech.glide.Glide;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity implements MainView, OnRefreshListener, MainAdapter.OnMainAdapterListener, NavigationView.OnRightClickListener {
     private RecyclerView rv_recommend;
@@ -39,6 +50,12 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private ShimmerRecyclerView gridShimmerRecyclerView;
     private NavigationView mNavigationView;
     private LinearLayout llBottomBar;
+    private RealmHelper mRealmHelper;
+    private CircleImageView ivIcon;
+    private TextView tvName;
+    private TextView tvAuthor;
+    private ImageView ivPlay;
+    private Music mMusic;
 
     @Override
     protected void initView() {
@@ -52,11 +69,16 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         mNavigationView.setRightClickListener(this);
         llBottomBar = fd(R.id.ll_bottom_bar);
         llBottomBar.setOnClickListener(bottomBarClickListener);
+        ivIcon = fd(R.id.iv_icon);
+        ivPlay = fd(R.id.iv_play);
+        tvAuthor = fd(R.id.tv_author);
+        tvName = fd(R.id.tv_name);
     }
 
     @Override
     protected void initData() {
         gridShimmerRecyclerView.showShimmerAdapter();
+        initBottomBar();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -71,6 +93,27 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         mainAdapter.setOnMainAdapterListener(this);
         recyclerView.setAdapter(mainAdapter);
         checkPermission();
+    }
+
+    private void initBottomBar() {
+        try {
+            mMusic = (Music) SharedPreferenceUtil.getObject(mActivity, Constants.SHARED_KEY);
+            if (mMusic != null) {
+                Glide.with(mActivity).load(mMusic.getPath()).into(ivIcon);
+                tvName.setText(mMusic.getTitle());
+                tvAuthor.setText(mMusic.getAuthor());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRealmHelper.destory();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -137,6 +180,19 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         @Override
         public void onClick(View view) {
             //底部栏点击事件
+            if (mMusic != null) {
+                PlayMusicActivity.startActivity(mActivity, mMusic.getImageUrl(), mMusic.getTitle(), mMusic.getAuthor(), mMusic.getSongId());
+            }
         }
     };
+
+    @Override
+    public void onEvent(Object object) {
+        super.onEvent(object);
+        if (object instanceof MusicEvent) {
+            mMusic = ((MusicEvent) object).getMusic();
+            initBottomBar();
+            ivPlay.setImageResource(R.mipmap.stop);
+        }
+    }
 }

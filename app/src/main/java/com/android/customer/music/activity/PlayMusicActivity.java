@@ -13,15 +13,21 @@ import androidx.annotation.RequiresApi;
 
 import com.android.customer.music.R;
 import com.android.customer.music.constant.Constants;
+import com.android.customer.music.event.MusicEvent;
 import com.android.customer.music.helper.LoadingDialogHelper;
+import com.android.customer.music.helper.RealmHelper;
 import com.android.customer.music.helper.RetrofitHelper;
 import com.android.customer.music.model.Music;
 import com.android.customer.music.model.PlayMusicModel;
+import com.android.customer.music.utils.SharedPreferenceUtil;
 import com.android.customer.music.view.PlayMusicView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,6 +45,7 @@ public class PlayMusicActivity extends BaseActivity {
     private TextView tvName;
     private TextView tvAuthor;
     private Music mMusic;
+    private RealmHelper mRealmHelper;
 
     @Override
     protected void initView() {
@@ -67,6 +74,8 @@ public class PlayMusicActivity extends BaseActivity {
         mMusic.setAuthor(author);
         mMusic.setTitle(name);
         mMusic.setImageUrl(imageUrl);
+        mMusic.setSongId(songId);
+        mRealmHelper = RealmHelper.getInstance();
     }
 
     @Override
@@ -95,6 +104,15 @@ public class PlayMusicActivity extends BaseActivity {
                             mMusic.setPath(playMusicModel.getBitrate().getFile_link());
                             playMusicView.setMusic(mMusic);
                             playMusicView.playMusic(playMusicModel.getBitrate().getFile_link());
+                            MusicEvent musicEvent = new MusicEvent();
+                            musicEvent.setMusic(mMusic);
+                            EventBus.getDefault().post(musicEvent);
+                            //保存到数据库
+                            try {
+                                SharedPreferenceUtil.saveObject(mMusic, mActivity, Constants.SHARED_KEY);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
 
@@ -143,5 +161,6 @@ public class PlayMusicActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         playMusicView.destory();
+        mRealmHelper.destory();
     }
 }

@@ -24,4 +24,6 @@ public class Constants {
 
     public static final String CANCEL = "cancel";
 
+    public static final String SHARED_KEY = "customerMusic";
+
 }
