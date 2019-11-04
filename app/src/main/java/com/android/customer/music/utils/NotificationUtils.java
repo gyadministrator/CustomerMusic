@@ -32,6 +32,7 @@ import static android.app.Notification.VISIBILITY_SECRET;
 public class NotificationUtils {
     private static NotificationManager notificationManager;
     private static RemoteViews remoteViews;
+    private static Music mMusic;
     private final static String CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel";
     private final static String CHANNEL_NAME = BuildConfig.APPLICATION_ID + ".name";
 
@@ -39,6 +40,10 @@ public class NotificationUtils {
         if (notificationManager == null)
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         return notificationManager;
+    }
+
+    public static void setMusic(Music music) {
+        mMusic = music;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -49,6 +54,7 @@ public class NotificationUtils {
 
     @TargetApi(Build.VERSION_CODES.O)
     public static void sendCustomNotification(Context context, Music music, Bitmap bitmap, int image) {
+        if (music == null) music = mMusic;
         Notification.Builder builder = getNotificationBuilder(context);
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.back_view);
         if (bitmap != null) {

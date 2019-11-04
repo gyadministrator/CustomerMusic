@@ -1,7 +1,10 @@
 package com.android.customer.music.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,6 +29,7 @@ import com.android.customer.music.model.Music;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.presenter.MainPresenter;
 import com.android.customer.music.utils.NotificationUtil;
+import com.android.customer.music.utils.NotificationUtils;
 import com.android.customer.music.view.MainView;
 import com.android.customer.music.view.NavigationView;
 import com.android.customer.music.view.RecyclerDecoration;
@@ -36,6 +40,13 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tencent.bugly.beta.Beta;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,6 +68,8 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private ImageView ivPlay;
     private Music mMusic;
     private MediaPlayerHelper mMediaPlayerHelper;
+    private Bitmap bitmap;
+    private long start;
 
     @Override
     protected void initView() {
@@ -104,16 +117,60 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         Beta.checkUpgrade();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initBottomBar() {
         mRealmHelper = RealmHelper.getInstance();
         mMusic = mRealmHelper.getOne();
         if (mMusic != null) {
-            Glide.with(mActivity).load(mMusic.getImageUrl()).into(ivIcon);
+            final String imageUrl = mMusic.getImageUrl();
+            Glide.with(mActivity).load(imageUrl).into(ivIcon);
             tvName.setText(mMusic.getTitle());
             tvAuthor.setText(mMusic.getAuthor());
             ivPlay.setOnClickListener(this);
             llBottomBar.setOnClickListener(bottomBarClickListener);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    bitmap = returnBitmap(imageUrl);
+                }
+            }).start();
+            //启动通知栏
+            //NotificationUtils.sendCustomNotification(mActivity, mMusic, bitmap, R.mipmap.play);
+            NotificationUtils.setMusic(mMusic);
         }
+    }
+
+    /**
+     * 根据图片的url路径获得Bitmap对象
+     * *
+     *
+     * @param url 图片地址
+     * @return
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private Bitmap returnBitmap(String url) {
+        URL fileUrl = null;
+        Bitmap bitmap = null;
+
+        try {
+            fileUrl = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            HttpURLConnection conn = (HttpURLConnection) Objects.requireNonNull(fileUrl)
+                    .openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     @Override
@@ -192,6 +249,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onEvent(Object object) {
         super.onEvent(object);
@@ -221,5 +279,19 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
             Animation animation = AnimationUtils.loadAnimation(mActivity, R.anim.play_music_anim);
             ivIcon.startAnimation(animation);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (System.currentTimeMillis() - start > 2000) {
+                ToastUtils.showShort("再次点击返回到桌面");
+                start = System.currentTimeMillis();
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
