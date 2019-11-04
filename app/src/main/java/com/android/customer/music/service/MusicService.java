@@ -19,10 +19,14 @@ import androidx.annotation.RequiresApi;
 
 import com.android.customer.music.R;
 import com.android.customer.music.activity.MainActivity;
+import com.android.customer.music.constant.Constants;
+import com.android.customer.music.event.MusicEvent;
 import com.android.customer.music.helper.MediaPlayerHelper;
 import com.android.customer.music.model.Music;
 import com.android.customer.music.utils.NotificationUtil;
 import com.android.customer.music.utils.NotificationUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +58,29 @@ public class MusicService extends Service {
     public MusicService() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = intent.getAction();
+        if (action != null) {
+            if (Constants.CANCEL.equals(action)) {
+                //取消
+                NotificationUtils.closeNotification();
+            } else if (Constants.PLAY.equals(action)) {
+                //播放
+                if (mMediaPlayerHelper.isPlaying()) {
+                    NotificationUtils.sendCustomNotification(mContext, mMusic, bitmap, R.mipmap.play);
+                    mMediaPlayerHelper.pause();
+                } else {
+                    NotificationUtils.sendCustomNotification(mContext, mMusic, bitmap, R.mipmap.stop);
+                    mMediaPlayerHelper.start();
+                }
+                EventBus.getDefault().post(new MusicEvent());
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     public class MusicBind extends Binder {
         /**
          * 设置音乐（MusicModel）
@@ -71,7 +98,7 @@ public class MusicService extends Service {
                         if (NotificationUtil.isNotificationEnabled(mContext) && bitmap != null) {
                             NotificationUtils.sendCustomNotification(mContext, mMusic, bitmap, R.mipmap.stop);
                         }
-                    }else {
+                    } else {
                         if (NotificationUtil.isNotificationEnabled(mContext)) {
                             NotificationUtils.sendCustomNotification(mContext, mMusic, bitmap, R.mipmap.stop);
                         }

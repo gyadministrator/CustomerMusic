@@ -3,6 +3,8 @@ package com.android.customer.music.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,15 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.customer.music.R;
 import com.android.customer.music.adapter.MainAdapter;
 import com.android.customer.music.adapter.RecyclerAdapter;
-import com.android.customer.music.constant.Constants;
 import com.android.customer.music.event.MusicEvent;
 import com.android.customer.music.helper.LoadingDialogHelper;
+import com.android.customer.music.helper.MediaPlayerHelper;
 import com.android.customer.music.helper.RealmHelper;
 import com.android.customer.music.model.Music;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.presenter.MainPresenter;
 import com.android.customer.music.utils.NotificationUtil;
-import com.android.customer.music.utils.SharedPreferenceUtil;
 import com.android.customer.music.view.MainView;
 import com.android.customer.music.view.NavigationView;
 import com.android.customer.music.view.RecyclerDecoration;
@@ -36,11 +37,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tencent.bugly.beta.Beta;
 
-import java.io.IOException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends BaseActivity implements MainView, OnRefreshListener, MainAdapter.OnMainAdapterListener, NavigationView.OnRightClickListener {
+public class MainActivity extends BaseActivity implements MainView, OnRefreshListener, MainAdapter.OnMainAdapterListener, NavigationView.OnRightClickListener, View.OnClickListener {
     private RecyclerView rv_recommend;
     private RecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
@@ -57,6 +56,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private TextView tvAuthor;
     private ImageView ivPlay;
     private Music mMusic;
+    private MediaPlayerHelper mMediaPlayerHelper;
 
     @Override
     protected void initView() {
@@ -69,7 +69,6 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         mNavigationView = fd(R.id.navigation);
         mNavigationView.setRightClickListener(this);
         llBottomBar = fd(R.id.ll_bottom_bar);
-        llBottomBar.setOnClickListener(bottomBarClickListener);
         ivIcon = fd(R.id.iv_icon);
         ivPlay = fd(R.id.iv_play);
         tvAuthor = fd(R.id.tv_author);
@@ -84,6 +83,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         //检测版本更新
         checkUpdate();
         gridShimmerRecyclerView.showShimmerAdapter();
+        mMediaPlayerHelper = MediaPlayerHelper.getInstance(mActivity);
         initBottomBar();
     }
 
@@ -105,12 +105,14 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     }
 
     private void initBottomBar() {
-        mRealmHelper=RealmHelper.getInstance();
+        mRealmHelper = RealmHelper.getInstance();
         mMusic = mRealmHelper.getOne();
         if (mMusic != null) {
             Glide.with(mActivity).load(mMusic.getImageUrl()).into(ivIcon);
             tvName.setText(mMusic.getTitle());
             tvAuthor.setText(mMusic.getAuthor());
+            ivPlay.setOnClickListener(this);
+            llBottomBar.setOnClickListener(bottomBarClickListener);
         }
     }
 
@@ -195,7 +197,29 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         super.onEvent(object);
         if (object instanceof MusicEvent) {
             initBottomBar();
+            if (mMediaPlayerHelper.isPlaying()) {
+                ivPlay.setImageResource(R.mipmap.stop);
+                Animation animation = AnimationUtils.loadAnimation(mActivity, R.anim.play_music_anim);
+                ivIcon.startAnimation(animation);
+            } else {
+                ivPlay.setImageResource(R.mipmap.play);
+                ivIcon.clearAnimation();
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        //底部播放按钮
+        if (mMediaPlayerHelper.isPlaying()) {
+            ivPlay.setImageResource(R.mipmap.play);
+            mMediaPlayerHelper.pause();
+            ivIcon.clearAnimation();
+        } else {
             ivPlay.setImageResource(R.mipmap.stop);
+            mMediaPlayerHelper.start();
+            Animation animation = AnimationUtils.loadAnimation(mActivity, R.anim.play_music_anim);
+            ivIcon.startAnimation(animation);
         }
     }
 }

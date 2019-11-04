@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,7 +56,7 @@ public class PlayMusicActivity extends BaseActivity {
     @Override
     protected void initData() {
         //隐藏状态栏
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String imageUrl = intent.getStringExtra("imageUrl");
@@ -104,7 +105,6 @@ public class PlayMusicActivity extends BaseActivity {
                             //保存到数据库
                             mRealmHelper.deleteAll();
                             mRealmHelper.save(mMusic);
-                            EventBus.getDefault().post(new MusicEvent());
                         }
                     }
 

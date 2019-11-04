@@ -20,8 +20,6 @@ public class Constants {
 
     public static final String PLAY = "play";
 
-    public static final String NEXT = "next";
-
     public static final String CANCEL = "cancel";
 
     public static final String SHARED_KEY = "customerMusic";

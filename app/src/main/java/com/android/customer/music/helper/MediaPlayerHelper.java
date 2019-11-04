@@ -6,6 +6,10 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import com.android.customer.music.event.MusicEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 
 /**
@@ -93,11 +97,24 @@ public class MediaPlayerHelper {
     }
 
     /**
+     * 判断音乐是否在播放
+     *
+     * @return
+     */
+    public boolean isPlaying() {
+        if (mMediaPlayer != null) {
+            return mMediaPlayer.isPlaying();
+        }
+        return false;
+    }
+
+    /**
      * 播放音乐
      */
     public void start() {
         if (mMediaPlayer.isPlaying()) return;
         mMediaPlayer.start();
+        EventBus.getDefault().post(new MusicEvent());
     }
 
     /**

@@ -75,10 +75,6 @@ public class NotificationUtils {
         service.setAction(Constants.PLAY);
         PendingIntent playIntent = PendingIntent.getService(context, 2, service, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.back_play, playIntent);
-        //下一首
-        service.setAction(Constants.NEXT);
-        PendingIntent nextIntent = PendingIntent.getService(context, 2, service, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.back_next, nextIntent);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
             builder.setCustomContentView(remoteViews);
