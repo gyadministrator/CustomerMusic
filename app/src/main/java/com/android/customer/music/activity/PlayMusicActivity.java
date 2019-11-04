@@ -81,7 +81,7 @@ public class PlayMusicActivity extends BaseActivity {
         playMusic(songId);
     }
 
-    private void playMusic(String songId) {
+    private void playMusic(final String songId) {
         LoadingDialogHelper.show(mActivity, "加载中...");
         RetrofitHelper retrofitHelper = RetrofitHelper.getInstance();
         Map<String, Object> params = retrofitHelper.getmParams();
@@ -112,7 +112,7 @@ public class PlayMusicActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         LoadingDialogHelper.dismiss();
-                        ToastUtils.showShort(Objects.requireNonNull(e.getMessage()));
+                        ToastUtils.showShort("该歌曲暂时无法获取播放源");
                     }
 
                     @Override

@@ -23,6 +23,7 @@ import com.android.customer.music.R;
 import com.android.customer.music.helper.MediaPlayerHelper;
 import com.android.customer.music.model.Music;
 import com.android.customer.music.service.MusicService;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -94,6 +95,10 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
      * 播放音乐
      */
     public void playMusic(String path) {
+        if (path == null) {
+            ToastUtils.showShort("该歌曲暂时无法获取播放源");
+            return;
+        }
         mPath = path;
         isPlaying = true;
         mIvPlay.setVisibility(GONE);
