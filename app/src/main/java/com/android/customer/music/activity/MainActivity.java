@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -69,7 +68,6 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private Music mMusic;
     private MediaPlayerHelper mMediaPlayerHelper;
     private Bitmap bitmap;
-    private long start;
 
     @Override
     protected void initView() {
@@ -273,25 +271,13 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
             ivPlay.setImageResource(R.mipmap.play);
             mMediaPlayerHelper.pause();
             ivIcon.clearAnimation();
+            NotificationUtils.sendCustomNotification(mActivity, mMusic, bitmap, R.mipmap.play);
         } else {
             ivPlay.setImageResource(R.mipmap.stop);
             mMediaPlayerHelper.start();
             Animation animation = AnimationUtils.loadAnimation(mActivity, R.anim.play_music_anim);
             ivIcon.startAnimation(animation);
+            NotificationUtils.sendCustomNotification(mActivity, mMusic, bitmap, R.mipmap.stop);
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (System.currentTimeMillis() - start > 2000) {
-                ToastUtils.showShort("再次点击返回到桌面");
-                start = System.currentTimeMillis();
-            } else {
-                finish();
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 }

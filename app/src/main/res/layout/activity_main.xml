@@ -64,7 +64,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:shimmer_demo_angle="20"
-                        app:shimmer_demo_child_count="10"
+                        app:shimmer_demo_child_count="6"
                         app:shimmer_demo_grid_child_count="3"
                         app:shimmer_demo_layout_manager_type="grid" />
 

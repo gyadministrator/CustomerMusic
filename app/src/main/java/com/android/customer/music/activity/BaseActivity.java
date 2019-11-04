@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.customer.music.R;
+import com.blankj.utilcode.util.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,6 +33,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public abstract class BaseActivity extends AppCompatActivity {
     protected Activity mActivity;
     private NetWorkCastReceiver receiver;
+    private long start;
 
     /**
      * 初始化布局
@@ -98,6 +101,28 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         //注册eventBus
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!this.getClass().getSimpleName().contains("MainActivity")) {
+                onBackPressed();
+                return true;
+            }
+            if (System.currentTimeMillis() - start > 2000) {
+                ToastUtils.showShort("再次点击返回到桌面");
+                start = System.currentTimeMillis();
+            } else {
+                //回到桌面
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                startActivity(intent);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
