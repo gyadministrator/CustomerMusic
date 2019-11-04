@@ -1,5 +1,7 @@
 package com.android.customer.music.helper;
 
+import android.util.Log;
+
 import com.android.customer.music.model.Music;
 
 import java.util.Date;
@@ -39,14 +41,13 @@ public class RealmHelper {
      *
      * @param music 实体
      */
-    public void save(Music music) {
-        mRealm.beginTransaction();
-        Music realmObject = mRealm.createObject(Music.class, music.getSongId());
-        realmObject.setImageUrl(music.getImageUrl());
-        realmObject.setPath(music.getPath());
-        realmObject.setTitle(music.getTitle());
-        realmObject.setAuthor(music.getAuthor());
-        mRealm.commitTransaction();
+    public void save(final Music music) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealmOrUpdate(music);
+            }
+        });
     }
 
     /**
@@ -56,7 +57,6 @@ public class RealmHelper {
      * @return
      */
     public List<Music> list(Map<String, Object> param) {
-        mRealm.beginTransaction();
         RealmQuery<Music> realmQuery = mRealm.where(Music.class);
         for (String key : param.keySet()) {
             Object value = param.get(key);
@@ -81,7 +81,6 @@ public class RealmHelper {
             }
         }
         RealmResults<Music> models = realmQuery.findAll();
-        mRealm.commitTransaction();
         return models.subList(0, models.size());
     }
 
@@ -91,11 +90,10 @@ public class RealmHelper {
      * @return
      */
     public Music getOne() {
-        mRealm.beginTransaction();
-        Music music = mRealm.where(Music.class)
-                .findFirst();
-        mRealm.commitTransaction();
-        return music;
+        RealmResults<Music> results = mRealm.where(Music.class)
+                .findAll();
+        List<Music> list = results.subList(0, results.size());
+        return list.get(0);
     }
 
     /**
@@ -103,10 +101,20 @@ public class RealmHelper {
      *
      * @param music 实体
      */
-    public void update(Music music) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(music);
-        mRealm.commitTransaction();
+    public void update(final Music music) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Music mMusic = realm.where(Music.class).equalTo("songId", music.getSongId())
+                        .findFirst();
+                if (mMusic != null) {
+                    mMusic.setAuthor(music.getAuthor());
+                    mMusic.setTitle(music.getTitle());
+                    mMusic.setPath(music.getPath());
+                    mMusic.setImageUrl(music.getImageUrl());
+                }
+            }
+        });
     }
 
     /**
@@ -115,20 +123,32 @@ public class RealmHelper {
      * @param music 实体
      */
     public void delete(Music music) {
-        mRealm.beginTransaction();
+        final RealmResults<Music> results = mRealm.where(Music.class).equalTo("songId", music.getSongId())
+                .findAll();
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.deleteAll();
+                results.deleteAllFromRealm();
             }
         });
-        mRealm.commitTransaction();
+    }
+
+    /**
+     * 删除所有
+     */
+    public void deleteAll() {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mRealm.deleteAll();
+            }
+        });
     }
 
     /**
      * 关闭数据库连接
      */
-    public void destory() {
+    public void close() {
         if (mRealm != null) {
             mRealm.close();
         }

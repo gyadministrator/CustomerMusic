@@ -188,7 +188,7 @@ public class PlayMusicView extends FrameLayout implements View.OnClickListener {
     /**
      * 解除绑定
      */
-    public void destory() {
+    public void close() {
         if (isBindService) {
             isBindService = false;
             mContext.unbindService(conn);

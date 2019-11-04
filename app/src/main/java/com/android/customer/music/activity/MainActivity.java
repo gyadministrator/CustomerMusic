@@ -105,24 +105,19 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     }
 
     private void initBottomBar() {
-        try {
-            mMusic = (Music) SharedPreferenceUtil.getObject(mActivity, Constants.SHARED_KEY);
-            if (mMusic != null) {
-                Glide.with(mActivity).load(mMusic.getPath()).into(ivIcon);
-                tvName.setText(mMusic.getTitle());
-                tvAuthor.setText(mMusic.getAuthor());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        mRealmHelper=RealmHelper.getInstance();
+        mMusic = mRealmHelper.getOne();
+        if (mMusic != null) {
+            Glide.with(mActivity).load(mMusic.getImageUrl()).into(ivIcon);
+            tvName.setText(mMusic.getTitle());
+            tvAuthor.setText(mMusic.getAuthor());
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRealmHelper.destory();
+        mRealmHelper.close();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -199,7 +194,6 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     public void onEvent(Object object) {
         super.onEvent(object);
         if (object instanceof MusicEvent) {
-            mMusic = ((MusicEvent) object).getMusic();
             initBottomBar();
             ivPlay.setImageResource(R.mipmap.stop);
         }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +18,6 @@ import com.android.customer.music.helper.RealmHelper;
 import com.android.customer.music.helper.RetrofitHelper;
 import com.android.customer.music.model.Music;
 import com.android.customer.music.model.PlayMusicModel;
-import com.android.customer.music.utils.SharedPreferenceUtil;
 import com.android.customer.music.view.PlayMusicView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
@@ -27,7 +25,6 @@ import com.bumptech.glide.request.RequestOptions;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -104,15 +101,10 @@ public class PlayMusicActivity extends BaseActivity {
                             mMusic.setPath(playMusicModel.getBitrate().getFile_link());
                             playMusicView.setMusic(mMusic);
                             playMusicView.playMusic(playMusicModel.getBitrate().getFile_link());
-                            MusicEvent musicEvent = new MusicEvent();
-                            musicEvent.setMusic(mMusic);
-                            EventBus.getDefault().post(musicEvent);
                             //保存到数据库
-                            try {
-                                SharedPreferenceUtil.saveObject(mMusic, mActivity, Constants.SHARED_KEY);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            mRealmHelper.deleteAll();
+                            mRealmHelper.save(mMusic);
+                            EventBus.getDefault().post(new MusicEvent());
                         }
                     }
 
@@ -160,7 +152,6 @@ public class PlayMusicActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        playMusicView.destory();
-        mRealmHelper.destory();
+        playMusicView.close();
     }
 }
