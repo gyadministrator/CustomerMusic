@@ -34,6 +34,7 @@ import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.tencent.bugly.beta.Beta;
 
 import java.io.IOException;
 
@@ -75,8 +76,13 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         tvName = fd(R.id.tv_name);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void initData() {
+        //检测通知栏权限
+        checkPermission();
+        //检测版本更新
+        checkUpdate();
         gridShimmerRecyclerView.showShimmerAdapter();
         initBottomBar();
     }
@@ -92,7 +98,10 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         mainAdapter = new MainAdapter(this, recyclerView, mainPresenter.getTitles(), mainPresenter.getTypes());
         mainAdapter.setOnMainAdapterListener(this);
         recyclerView.setAdapter(mainAdapter);
-        checkPermission();
+    }
+
+    private void checkUpdate() {
+        Beta.checkUpgrade();
     }
 
     private void initBottomBar() {

@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -24,7 +23,6 @@ import com.android.customer.music.R;
 import com.android.customer.music.helper.MediaPlayerHelper;
 import com.android.customer.music.model.Music;
 import com.android.customer.music.service.MusicService;
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;

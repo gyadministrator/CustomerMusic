@@ -81,16 +81,6 @@ public class MediaPlayerHelper {
                 }
             }
         });
-
-        mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-            @Override
-            public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
-                LoadingDialogHelper.show((Activity) mContext, "缓存进度" + i + "%");
-                if (i==100){
-                    LoadingDialogHelper.dismiss();
-                }
-            }
-        });
     }
 
     /**
