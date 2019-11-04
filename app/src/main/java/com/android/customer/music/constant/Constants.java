@@ -26,4 +26,6 @@ public class Constants {
 
     public static final String SHARED_KEY = "customerMusic";
 
+    public static final String BUGLY_APPID="48f50ca656";
+
 }

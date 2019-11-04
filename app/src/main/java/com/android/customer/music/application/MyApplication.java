@@ -2,7 +2,9 @@ package com.android.customer.music.application;
 
 import android.app.Application;
 
+import com.android.customer.music.constant.Constants;
 import com.blankj.utilcode.util.Utils;
+import com.tencent.bugly.Bugly;
 
 import io.realm.Realm;
 
@@ -17,5 +19,6 @@ public class MyApplication extends Application {
         super.onCreate();
         Utils.init(this);
         Realm.init(this);
+        Bugly.init(getApplicationContext(), Constants.BUGLY_APPID, false);
     }
 }
