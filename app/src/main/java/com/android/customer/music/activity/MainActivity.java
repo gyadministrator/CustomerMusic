@@ -68,6 +68,8 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     private Music mMusic;
     private MediaPlayerHelper mMediaPlayerHelper;
     private Bitmap bitmap;
+    private boolean isFirst = true;
+
     @Override
     protected void initView() {
         rv_recommend = fd(R.id.rv_recommend);
@@ -270,6 +272,13 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
 
     @Override
     public void onClick(View view) {
+        if (isFirst) {
+            isFirst = false;
+            if (mMusic != null) {
+                PlayMusicActivity.startActivity(mActivity, mMusic.getImageUrl(), mMusic.getTitle(), mMusic.getAuthor(), mMusic.getSongId());
+            }
+            return;
+        }
         //底部播放按钮
         if (mMediaPlayerHelper.isPlaying()) {
             ivPlay.setImageResource(R.mipmap.play);

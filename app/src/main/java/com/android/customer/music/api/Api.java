@@ -1,9 +1,11 @@
 package com.android.customer.music.api;
 
+import com.android.customer.music.model.LrcModel;
 import com.android.customer.music.model.MusicModel;
 import com.android.customer.music.model.PlayMusicModel;
 import com.android.customer.music.model.RecommendMusicModel;
 import com.android.customer.music.model.SearchMusicModel;
+import com.android.customer.music.model.SingerInfoModel;
 
 import java.util.Map;
 
@@ -62,4 +64,20 @@ public interface Api {
      */
     @GET("v1/restserver/ting")
     Observable<RecommendMusicModel> recommend(@QueryMap Map<String, Object> params);
+
+    /**
+     * method=baidu.ting.song.lry&songid=877578
+     * @param params 参数
+     * @return
+     */
+    @GET("v1/restserver/ting")
+    Observable<LrcModel> lrc(@QueryMap Map<String, Object> params);
+
+    /**
+     * method=baidu.ting.artist.getInfo&tinguid=877578
+     * @param params 参数
+     * @return
+     */
+    @GET("v1/restserver/ting")
+    Observable<SingerInfoModel> getInfo(@QueryMap Map<String, Object> params);
 }

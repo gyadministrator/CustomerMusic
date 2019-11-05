@@ -1,9 +1,11 @@
 package com.android.customer.music.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ import com.android.customer.music.view.PlayMusicView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,6 +47,7 @@ public class PlayMusicActivity extends BaseActivity {
     private TextView tvAuthor;
     private Music mMusic;
     private RealmHelper mRealmHelper;
+    private String tingUid;
 
     @Override
     protected void initView() {
@@ -105,6 +109,10 @@ public class PlayMusicActivity extends BaseActivity {
                             //保存到数据库
                             mRealmHelper.deleteAll();
                             mRealmHelper.save(mMusic);
+
+                            if (playMusicModel.getSonginfo() != null) {
+                                tingUid = playMusicModel.getSonginfo().getTing_uid();
+                            }
                         }
                     }
 
@@ -117,6 +125,11 @@ public class PlayMusicActivity extends BaseActivity {
 
                     @Override
                     public void onComplete() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         LoadingDialogHelper.dismiss();
                     }
                 });
@@ -142,6 +155,36 @@ public class PlayMusicActivity extends BaseActivity {
 
     public void onBackClick(View view) {
         onBackPressed();
+    }
+
+    public void onMore(View view) {
+        //更多
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mActivity);
+        bottomSheetDialog.setCanceledOnTouchOutside(true);
+        @SuppressLint("InflateParams") View bottomView = LayoutInflater.from(mActivity).inflate(R.layout.bottom_singer_info, null);
+        bottomSheetDialog.setContentView(bottomView);
+        bottomSheetDialog.show();
+
+        TextView tvSinger = bottomView.findViewById(R.id.tv_singer);
+        TextView tvCancel = bottomView.findViewById(R.id.tv_cancel);
+
+        tvSinger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //打开歌手详情页面
+                SingerInfoActivity.startActivity(mActivity, tingUid);
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetDialog.isShowing()) {
+                    bottomSheetDialog.dismiss();
+                }
+            }
+        });
     }
 
     @Override
