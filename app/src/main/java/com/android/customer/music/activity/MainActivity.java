@@ -258,6 +258,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     public void onEvent(Object object) {
         super.onEvent(object);
         if (object instanceof MusicEvent) {
+            isFirst = false;
             initBottomBar();
             if (mMediaPlayerHelper.isPlaying()) {
                 ivPlay.setImageResource(R.mipmap.stop);

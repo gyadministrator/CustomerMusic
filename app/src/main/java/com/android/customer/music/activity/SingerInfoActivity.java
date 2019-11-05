@@ -134,4 +134,13 @@ public class SingerInfoActivity extends BaseActivity {
         intent.putExtra("tingUid", tingUid);
         context.startActivity(intent);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAgentWeb != null) {
+            mAgentWeb.clearWebCache();
+            mAgentWeb.destroy();
+        }
+    }
 }
