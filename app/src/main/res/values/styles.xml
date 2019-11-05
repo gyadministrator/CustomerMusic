@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/mainColor</item>
         <!--
-                <item name="android:windowAnimationStyle">@style/translate</item>
+                <item name="android:windowAnimationStyle">@style/fade</item>
         -->
     </style>
 
