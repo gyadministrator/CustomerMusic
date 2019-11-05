@@ -139,9 +139,7 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //启动通知栏
-            //NotificationUtils.setMusic(mMusic);
-            //NotificationUtils.sendCustomNotification(mActivity, mMusic, bitmap, R.mipmap.play);
+            NotificationUtils.setMusic(mMusic);
         }
     }
 
