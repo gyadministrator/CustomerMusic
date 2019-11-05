@@ -255,6 +255,13 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
+    protected void hasNet() {
+        super.hasNet();
+        initAction();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
     public void onEvent(Object object) {
         super.onEvent(object);
         if (object instanceof MusicEvent) {

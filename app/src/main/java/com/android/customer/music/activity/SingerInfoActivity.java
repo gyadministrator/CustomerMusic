@@ -54,6 +54,12 @@ public class SingerInfoActivity extends BaseActivity {
         getSingerInfo();
     }
 
+    @Override
+    protected void hasNet() {
+        super.hasNet();
+        initAction();
+    }
+
     private void getSingerInfo() {
         LoadingDialogHelper.show(mActivity, "加载中...");
         RetrofitHelper retrofitHelper = RetrofitHelper.getInstance();

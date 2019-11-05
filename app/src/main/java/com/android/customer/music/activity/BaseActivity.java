@@ -14,11 +14,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.customer.music.R;
+import com.android.customer.music.utils.NetWorkUtils;
 import com.blankj.utilcode.util.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,8 +34,9 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public abstract class BaseActivity extends AppCompatActivity {
     protected Activity mActivity;
-    private NetWorkCastReceiver receiver;
+    private NetworkChangedReceiver networkChangedReceiver;
     private long start;
+    private boolean isNet = true;
 
     /**
      * 初始化布局
@@ -92,15 +95,25 @@ public abstract class BaseActivity extends AppCompatActivity {
         initAction();
 
         //注册网络广播
-        receiver = new NetWorkCastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
-
+        networkChangedReceiver = new NetworkChangedReceiver();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangedReceiver, intentFilter);
         //注册eventBus
         EventBus.getDefault().register(this);
+    }
+
+    /**
+     * 有网络
+     */
+    protected void hasNet() {
+        isNet = false;
+    }
+
+    /**
+     * 无网络
+     */
+    protected void noNet() {
+        isNet = true;
     }
 
     @Override
@@ -128,26 +141,50 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        if (networkChangedReceiver != null) {
+            unregisterReceiver(networkChangedReceiver);
         }
         //解绑eventBus
         EventBus.getDefault().unregister(this);
     }
 
-    private class NetWorkCastReceiver extends BroadcastReceiver {
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
 
+    @Override
+    public void startActivity(Intent intent, @Nullable Bundle options) {
+        super.startActivity(intent, options);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    private class NetworkChangedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
-                NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-                if (info != null) {
-                    if (NetworkInfo.State.CONNECTED != info.getState()) {
-                        //连接状态 处理自己的业务逻辑
-                        Toast.makeText(context, "网络链接失败", Toast.LENGTH_SHORT).show();
+            int netWorkStates = NetWorkUtils.getNetWorkStates(context);
+
+            switch (netWorkStates) {
+                case NetWorkUtils.TYPE_NONE:
+                    //断网了
+                    ToastUtils.showShort("当前没有网络连接");
+                    noNet();
+                    break;
+                case NetWorkUtils.TYPE_MOBILE:
+                case NetWorkUtils.TYPE_WIFI:
+                    //打开了WIFI
+                    //打开了移动网络
+                    if (!isNet) {
+                        hasNet();
                     }
-                }
+                    break;
             }
         }
     }

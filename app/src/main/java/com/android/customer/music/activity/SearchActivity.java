@@ -76,6 +76,12 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
+    @Override
+    protected void hasNet() {
+        super.hasNet();
+        search(etSearch.getText().toString());
+    }
+
     private void search(String key) {
         LoadingDialogHelper.show(mActivity, "搜索中...");
         RetrofitHelper retrofitHelper = RetrofitHelper.getInstance();

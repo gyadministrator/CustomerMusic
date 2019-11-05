@@ -63,6 +63,12 @@ public class AlbumActivity extends BaseActivity implements OnRefreshListener, On
     }
 
     @Override
+    protected void hasNet() {
+        super.hasNet();
+        initAction();
+    }
+
+    @Override
     protected void initAction() {
         setData();
     }

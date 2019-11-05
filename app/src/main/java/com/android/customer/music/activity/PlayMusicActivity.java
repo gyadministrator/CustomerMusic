@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi;
 
 import com.android.customer.music.R;
 import com.android.customer.music.constant.Constants;
-import com.android.customer.music.event.MusicEvent;
 import com.android.customer.music.helper.LoadingDialogHelper;
 import com.android.customer.music.helper.RealmHelper;
 import com.android.customer.music.helper.RetrofitHelper;
@@ -27,10 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.Map;
-import java.util.Objects;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;

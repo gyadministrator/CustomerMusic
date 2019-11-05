@@ -24,7 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
-        <activity android:name=".activity.SingerInfoActivity"></activity>
+        <activity
+            android:name=".activity.SingerInfoActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SearchActivity"
             android:screenOrientation="portrait" />
