@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.android.customer.music.R;
+import com.android.customer.music.activity.MainActivity;
 
 /**
  * Description: CustomerMusic
@@ -75,6 +76,12 @@ public class NavigationView extends LinearLayout {
             iv_back.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (context instanceof MainActivity) {
+                        if (rightClickListener != null) {
+                            rightClickListener.clickLeft(view);
+                            return;
+                        }
+                    }
                     ((Activity) context).onBackPressed();
                 }
             });
@@ -103,5 +110,7 @@ public class NavigationView extends LinearLayout {
 
     public interface OnRightClickListener {
         void clickRight(View view);
+
+        void clickLeft(View view);
     }
 }

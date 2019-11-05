@@ -243,6 +243,12 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
         startActivity(intent);
     }
 
+    @Override
+    public void clickLeft(View view) {
+        //设置界面
+        startActivity(new Intent(mActivity, SettingActivity.class));
+    }
+
     private View.OnClickListener bottomBarClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.SettingActivity">
+
+    <com.android.customer.music.view.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:showRight="false"
+        app:title="设置" />
+
+    <ImageView
+        android:id="@+id/textView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="50dp"
+        android:src="@mipmap/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navigationView" />
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        android:drawableEnd="@mipmap/right"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:padding="6dp"
+        android:paddingStart="15dp"
+        android:paddingLeft="15dp"
+        android:text="当前版本\t\tv1.0"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:ignore="HardcodedText,RtlSymmetry" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="#CCCCCC"
+        app:layout_constraintTop_toBottomOf="@+id/tv_version"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/tv_clean"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:drawableEnd="@mipmap/right"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:padding="6dp"
+        android:paddingStart="15dp"
+        android:paddingLeft="15dp"
+        android:text="清除缓存\t\t20M"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_version"
+        tools:ignore="HardcodedText,RtlSymmetry" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
