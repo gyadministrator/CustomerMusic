@@ -53,7 +53,7 @@ public class MainPresenter<V extends MainView> extends BasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        view.fail(e.getMessage());
+                            view.fail(e.getMessage());
                     }
 
                     @Override

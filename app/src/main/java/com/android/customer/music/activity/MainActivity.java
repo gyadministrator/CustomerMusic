@@ -119,7 +119,11 @@ public class MainActivity extends BaseActivity implements MainView, OnRefreshLis
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initBottomBar() {
         mRealmHelper = RealmHelper.getInstance();
-        mMusic = mRealmHelper.getOne();
+        try {
+            mMusic = mRealmHelper.getOne();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (mMusic != null) {
             final String imageUrl = mMusic.getImageUrl();
             Glide.with(mActivity).load(imageUrl).into(ivIcon);
